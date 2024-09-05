@@ -7,22 +7,36 @@ import java.rmi.NoSuchObjectException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Main {
 
     public static void main(String[] args) throws NoSuchObjectException {
-        task1();
-        task2();
-        task3();
-        task4();
-        task5();
-        task6();
-        task7();
-        task8();
-        task9();
-        task10();
-        task11();
+        List<Animal> animals = Util.getAnimals();
+
+        System.out.println("Task 1");
+        task1(animals).forEach(System.out::println);
+        System.out.println("Task 2");
+        task2(animals).forEach(System.out::println);
+        System.out.println("Task 3");
+        task3(animals).forEach(System.out::println);
+        System.out.println("Task 4");
+        System.out.println(task4(animals));
+        System.out.println("Task 5");
+        System.out.println(task5(animals));
+        System.out.println("Task 6");
+        System.out.println(task6(animals));
+        System.out.println("Task 7");
+        System.out.println(task7(animals));
+        System.out.println("Task 8");
+        System.out.println(task8(animals));
+        System.out.println("Task 9");
+        System.out.println(task9(animals));
+        System.out.println("Task 10");
+        System.out.println(task10(animals));
+        System.out.println("Task 11");
+        System.out.println(task11(animals));
         task12();
         task13();
         task14();
@@ -36,127 +50,119 @@ public class Main {
         task22();
     }
 
-    public static void task1() {
+    public static List<Animal> task1(List<Animal> animals) {
         /*Из представленных животных отобрать все молодые особи от 10 до 20 лет и
         отсортировать по возрасту (по возрастанию) далее - распределить по 7 на каждый зоопарк.
         Зоопарков неограниченное кол-во а вы - директор 3-го по счёту зоопарка.
         Полученных животных вывести в консоль.*/
 
-        System.out.println("Task 1");
         int skipAmount = 2 * 7;
 
-        List<Animal> animals = Util.getAnimals();
-        animals.stream()
+        return animals.stream()
                 .filter(animal -> animal.getAge() >= 10 && animal.getAge() <= 20)
                 .sorted(Comparator.comparingInt(Animal::getAge))
                 .skip(skipAmount)
                 .limit(7)
-                .forEach(System.out::println);
+                .toList();
     }
 
-    public static void task2() {
-        List<Animal> animals = Util.getAnimals();
-        System.out.println("Task 2");
+    public static List<String> task2(List<Animal> animals) {
         /*Отобрать всех животных из Японии (Japanese) и записать породу UPPER_CASE в если
         пол Female преобразовать к строкам породы животных и вывести в консоль*/
-        animals.stream()
+        return animals.stream()
                 .filter(animal -> animal.getOrigin().equals("Japanese"))
-                .forEach(animal -> System.out.println(animal.getBread().toUpperCase()));
+                .map(animal -> animal.getBread().toUpperCase())
+                .toList();
     }
 
-    public static void task3() {
-        System.out.println("Task 3");
+    public static List<String> task3(List<Animal> animals) {
         /*Отобрать всех животных старше 30 лет и вывести все страны
         происхождения без дубликатов начинающиеся на "A"*/
-        List<Animal> animals = Util.getAnimals();
-        animals.stream()
+        return animals.stream()
                 .filter(animal -> animal.getAge() > 30)
                 .map(Animal::getOrigin)
                 .distinct()
                 .filter(origin -> origin.startsWith("A"))
-                .forEach(System.out::println);
+                .toList();
     }
 
-    public static void task4() {
-        System.out.println("Task 4");
+
+    public static long task4(List<Animal> animals) {
         /*Подсчитать количество всех животных пола = Female. Вывести в консоль*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
+        return animals.stream()
                 .filter(animal -> animal.getGender().equals("Female"))
-                .count());
+                .count();
     }
 
-    public static void task5() {
-        System.out.println("Task 5");
+    public static boolean task5(List<Animal> animals) {
         /*Взять всех животных возрастом 20 - 30 лет.
         Есть ли среди нах хоть один из страны Венгрия (Hungarian)? Ответ вывести в консоль*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
+        return animals.stream()
                 .filter(animal -> animal.getAge() >= 20 && animal.getAge() <= 30)
-                .anyMatch(animal -> animal.getOrigin().equals("Hungarian")));
+                .anyMatch(animal -> animal.getOrigin().equals("Hungarian"));
 
     }
 
-    public static void task6() {
-        System.out.println("Task 6");
+    public static boolean task6(List<Animal> animals) {
         /*Взять всех животных. Все ли они пола Male и Female ? Ответ вывести в консоль*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
-                .allMatch(animal -> animal.getGender().equals("Female") || animal.getGender().equals("Male")));
+        return animals.stream()
+                .allMatch(animal -> animal.getGender().equals("Female") || animal.getGender().equals("Male"));
     }
 
-    public static void task7() {
-        System.out.println("Task 7");
+    public static boolean task7(List<Animal> animals) {
         /*Взять всех животных. Узнать что ни одно из них не имеет страну
         происхождения Oceania. Ответ вывести в консоль*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
-                .noneMatch(animal -> animal.getOrigin().equals("Oceania")));
+        return animals.stream()
+                .noneMatch(animal -> animal.getOrigin().equals("Oceania"));
     }
 
-    public static void task8() throws NoSuchObjectException {
-        System.out.println("Task 8");
+    public static int task8(List<Animal> animals) {
         /*Взять всех животных. Отсортировать их породу в стандартном порядке и
         взять первые 100. Вывести в консоль возраст самого старого животного*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
+        OptionalInt max = animals.stream()
                 .sorted(Comparator.comparing(Animal::getBread))
                 .limit(100)
-                .max(Comparator.comparingInt(Animal::getAge))
-                .orElseThrow(() -> new NoSuchObjectException("Object not found")));
+                .mapToInt(Animal::getAge)
+                .max();
+        if (max.isPresent()) {
+            return max.getAsInt();
+        }
+        return 0;
     }
 
-    public static void task9() throws NoSuchObjectException {
-        System.out.println("Task 9");
+    public static int task9(List<Animal> animals){
         /*Взять всех животных. Преобразовать их в породы, а породы
         в []char Вывести в консоль длину самого короткого массива*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
+        OptionalInt min = animals.stream()
                 .map(Animal::getOrigin)
                 .map(String::toCharArray)
-                .min(Comparator.comparingInt(chars -> chars.length))
-                .orElseThrow(() -> new NoSuchObjectException("Object not found")));
+                .mapToInt(chars -> chars.length)
+                .min();
+        if (min.isPresent()) {
+            return min.getAsInt();
+        }
+        return 0;
     }
 
-    public static void task10() {
-        System.out.println("Task 10");
+    public static long task10(List<Animal> animals) {
         /*Взять всех животных. Подсчитать суммарный возраст всех животных. Вывести результат в консоль*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
+
+        return animals.stream()
                 .mapToInt(Animal::getAge)
-                .sum());
+                .sum();
     }
 
-    public static void task11() throws NoSuchObjectException {
-        System.out.println("Task 11");
+    public static double task11(List<Animal> animals){
         /*Взять всех животных. Подсчитать средний возраст всех животных
         из индонезии (Indonesian). Вывести результат в консоль*/
-        List<Animal> animals = Util.getAnimals();
-        System.out.println(animals.stream()
+        OptionalDouble average = animals.stream()
                 .filter(animal -> animal.getOrigin().equals("Indonesian"))
                 .mapToInt(Animal::getAge)
-                .average()
-                .orElseThrow(() -> new NoSuchObjectException("Object not found")));
+                .average();
+        if (average.isPresent()) {
+            return average.getAsDouble();
+        }
+        return 0;
     }
 
     public static void task12() {
